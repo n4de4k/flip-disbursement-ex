@@ -6,11 +6,14 @@ spl_autoload_register(function ($class_name) {
 });
 
 use model\Transaction;
+try {
+    $trans = new Transaction;
+    $trans->bank_code = "0232";
+    $trans->amount = "12000000";
 
-$trans = new Transaction;
-$trans->bank_code = "0232";
-$trans->amount = "12000000";
-
-$trans->save();
+    $trans->save();
+} catch (Exception $e) {
+    var_dump($e);
+}
 
 ?>

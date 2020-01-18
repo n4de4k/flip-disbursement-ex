@@ -3,6 +3,13 @@ namespace libs;
 
 class Model {
     protected $data;
+    const FILTERED_COLUMN = ['table', 'data'];
+    private function query($query) {
+        $conn = Db::getInstance();
+        $res = mysqli_query($conn, $query);
+
+        return $res;
+    }
 
     public function save() {
         $this->data = get_object_vars($this);
@@ -10,7 +17,7 @@ class Model {
         $valueString = '';
 
         foreach ($this->data as $column => $value) {
-            if ($column !== 'table') {
+            if (!in_array($column, self::FILTERED_COLUMN)) {
                 $columnString .= $column . ',';
 
                 $valueType = gettype($value);
@@ -35,7 +42,9 @@ class Model {
         }
 
         $query = 'INSERT INTO ' .$this->table .' (' . $columnString . ') VALUES (' . $valueString . ');';
-        echo $query;
+        $res = $this->query($query);
+
+        return $res;
     }
 }
 
