@@ -5,7 +5,7 @@ namespace model;
 use libs\Model;
 
 class Transaction extends Model {
-    protected $table = 'transactions';
+    public $_table = 'transactions';
     public $bank_code;
     public $account_number;
     public $amount;
