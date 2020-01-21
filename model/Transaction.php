@@ -2,7 +2,7 @@
 
 namespace model;
 
-use libs\Model;
+use libs\Model\Impl\Model;
 
 class Transaction extends Model {
     public $_table = 'transactions';
@@ -14,5 +14,3 @@ class Transaction extends Model {
     public $receipt;
     public $time_served;
 }
-
-?>

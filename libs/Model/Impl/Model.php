@@ -1,7 +1,9 @@
 <?php
-namespace libs;
+namespace libs\Model\Impl;
 
-class Model {
+use libs\Model\iModel;
+
+class Model implements iModel{
     private $_data;
     const FILTERED_COLUMN = ['_table', '_data'];    
 

@@ -1,10 +1,9 @@
 <?php
 namespace repository;
 
-use interfaces\TransactionRepoInterface;
-use libs\Db;
+use libs\Dbo\Impl\Db;
 
-class Transaction implements TransactionRepoInterface {
+class Transaction implements iTransaction {
     private $db;
     function __construct() {
         $this->db = Db::getInstance();
@@ -18,4 +17,3 @@ class Transaction implements TransactionRepoInterface {
         $this->db->save($data);
     }
 }
-?>

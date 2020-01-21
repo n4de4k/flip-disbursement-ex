@@ -1,10 +1,10 @@
 <?php
 
-namespace libs;
+namespace libs\Dbo\Impl;
 
-use libs\Model;
+use libs\Dbo\iDbo;
 
-class Db {
+class Db implements iDbo {
     public static $instance = null;
     public $conn;
 
@@ -31,28 +31,26 @@ class Db {
         return $res;
     }
 
-    public function save(Model $model) {
+    public function save($model) {
         $columnString = '';
         $valueString = '';
 
         foreach ($model->getData() as $column => $value) {
-            if (!in_array($column, Model::FILTERED_COLUMN)) {
-                $columnString .= $column . ',';
+            $columnString .= $column . ',';
 
-                $valueType = gettype($value);
-                $isString = $valueType !== "boolean" && 
-                            $valueType !== 'integer' &&
-                            $valueType !== 'double' &&
-                            $valueType !== 'NULL';
-                if ($isString) {
-                    $valueString .= '\'';
-                }
-                $valueString .= (empty($value) ? 'NULL' : $value);
-                if ($isString) {
-                    $valueString .= '\'';
-                }
-                $valueString .= ',';
+            $valueType = gettype($value);
+            $isString = $valueType !== "boolean" &&
+                        $valueType !== 'integer' &&
+                        $valueType !== 'double' &&
+                        $valueType !== 'NULL';
+            if ($isString) {
+                $valueString .= '\'';
             }
+            $valueString .= (empty($value) ? 'NULL' : $value);
+            if ($isString) {
+                $valueString .= '\'';
+            }
+            $valueString .= ',';
         }
 
         if (strlen($columnString) > 0) {

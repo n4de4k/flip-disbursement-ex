@@ -3,24 +3,22 @@
 spl_autoload_register(function ($class_name) {
     try {
         $name = str_replace('\\', '/', $class_name);
-        include_once $name . '.php';
+        include_once __DIR__ . '/' .$name . '.php';
     } catch (Exception $e) {
-        throw new Exception("Unable to load $name. Error: " . $e);
+        throw new Exception("Unable to load $class_name. Error: " . $e);
     }
 });
 
-use model\Transaction;
-use repository\Transaction as TransactionRepo;
+use libs\Request\Impl\Request;
+use libs\Router\Impl\Router;
+
 try {
-    $trans = new Transaction;
-    $trans->bank_code = "0232";
-    $trans->amount = "12000000";
+    $request = new Request();
+    $router = new Router($request);
+    $router->get('/test', 'Transaction::newTransaction');
 
-
-    $repo = new TransactionRepo;
-    $repo->store($trans);
+    $router->handle();
 } catch (Exception $e) {
     var_dump($e);
 }
 
-?>
