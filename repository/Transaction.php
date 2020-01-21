@@ -3,7 +3,7 @@ namespace repository;
 
 use libs\Dbo\Impl\Db;
 
-class Transaction implements iTransaction {
+class Transaction {
     private $db;
     function __construct() {
         $this->db = Db::getInstance();

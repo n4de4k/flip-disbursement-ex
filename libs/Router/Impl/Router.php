@@ -15,13 +15,10 @@ class Router implements iRouter{
     }
 
     private function findSuitHandler($route, $maps) {
-        foreach ($maps as $key => $handler) {
-            if ($key == $route) {
-                return $handler;
-            }
+        if (!isset($maps[$route])) {
+            throw new \Exception('404 Not Found');
         }
-
-        throw new \Exception('404 Not Found');
+        return $maps[$route];
     }
 
     private function getRequestPath()
