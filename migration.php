@@ -25,10 +25,10 @@ $db->query("CREATE TABLE transactions (
         amount INT(10) ,
         remark VARCHAR(100) ,
         status VARCHAR(100) ,
-        receipt VARCHAR(100) ,
+        receipt TEXT ,
         time_served TIMESTAMP ,
         beneficiary_name VARCHAR(100) ,
-        flip_trans_id INT(6),
+        flip_trans_id BIGINT(20),
         created_at TIMESTAMP ,
         updated_at TIMESTAMP 
     )");

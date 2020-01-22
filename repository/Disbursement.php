@@ -38,6 +38,7 @@ class Disbursement {
         $model->receipt = $this->response->receipt;
         $model->beneficiary_name = $this->response->beneficiary_name;
         $model->fee = $this->response->fee;
+        $model->flip_trans_id = $this->response->id;
 
         return $model;
     }

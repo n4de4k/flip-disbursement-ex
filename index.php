@@ -20,6 +20,12 @@ try {
 
     $router->handle();
 } catch (Exception $e) {
-    var_dump($e);
+    header("Content-type:application/json;charset=utf-8");
+    http_response_code(500);
+    echo json_encode([
+        "code"=> 500,
+        "message"=> $e->getMessage(),
+        "stack" => $e->getTrace()
+    ]);
 }
 

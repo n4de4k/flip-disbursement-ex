@@ -7,8 +7,8 @@ class Model implements iModel{
     private $_data;
     const FILTERED_COLUMN = ['_table', '_data'];
 
-    protected $created_at;
-    protected $updated_at;
+    public $created_at;
+    public $updated_at;
 
     function __construct() {
         $this->created_at = date('Y-m-d H:i:s');

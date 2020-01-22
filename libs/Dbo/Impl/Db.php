@@ -75,9 +75,14 @@ class Db implements iDbo {
         if (!$model->id) {
             throw new \Exception('To use this function, id  can\'t be null');
         }
+        $model->updated_at = date('Y-m-d H:i:s');
         $query = 'UPDATE ' . $model->_table . ' SET';
 
-        foreach ($model->getData() as $column => $value) {
+        $i = 0;
+        $data = $model->getData();
+        $dataLength = count($data);
+
+        foreach ($data as $column => $value) {
             if ($column !== 'id') {
                 $query .= ' ' . $column . ' = ';
                 $isString = $this->isString($value);
@@ -88,6 +93,11 @@ class Db implements iDbo {
                 if ($isString) {
                     $query .= '\'';
                 }
+
+                if ($i < $dataLength - 2) {
+                    $query .= ', ';
+                }
+                $i += 1;
             }
         }
 
@@ -96,5 +106,19 @@ class Db implements iDbo {
         $this->query($query);
 
         return $model;
+    }
+
+    public function findById($model) {
+        $query = "SELECT * FROM " . $model->_table . " WHERE id = " . $model->id;
+
+        $result = $this->query($query);
+
+        if ($result->num_rows == 0) {
+            return null;
+        } else {
+            $data = $result->fetch_assoc();
+
+            return $data;
+        }
     }
 }

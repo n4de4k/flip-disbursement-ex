@@ -19,4 +19,17 @@ class Request implements iRequest {
     public function parse($key) {
         return (isset($this->data[$key]) ? $this->data[$key] : null);
     }
+
+    public function validate($validation) {
+        foreach ($validation as $key => $value) {
+            switch ($value) {
+                case 'required': {
+                    if (!isset($this->data[$key])) {
+                        throw new \Exception($key . ' can\'t be null');
+                    }
+                    break;
+                }
+            }
+        }
+    }
 }
