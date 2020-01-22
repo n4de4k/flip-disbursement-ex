@@ -11,14 +11,14 @@ spl_autoload_register(function ($class_name) {
 
 use libs\Request\Impl\Request;
 use libs\Router\Impl\Router;
+use app\App;
 
 try {
     $request = new Request();
     $router = new Router($request);
-    $router->post('/transaction', 'Transaction::newTransaction');
-    $router->get('/transaction', 'Transaction::checkTransaction');
 
-    $router->handle();
+    $app = new App($router);
+    $app->run();
 } catch (Exception $e) {
     header("Content-type:application/json;charset=utf-8");
     http_response_code(500);
