@@ -43,14 +43,19 @@ class Router implements iRouter{
         $reqMethod = $_SERVER['REQUEST_METHOD'];
 
         $handler = "";
+        $requestData = [];
+        $inputType = INPUT_GET;
         try {
             switch ($reqMethod) {
                 case 'GET': {
                     $handler = $this->findSuitHandler($this->getRequestPath(), $this->mapGetRoute);
+                    $requestData = $_GET;
                     break;
                 }
                 case 'POST': {
                     $handler = $this->findSuitHandler($this->getRequestPath(), $this->mapPostRoute);
+                    $requestData = $_POST;
+                    $inputType = INPUT_POST;
                     break;
                 }
             }
@@ -60,7 +65,7 @@ class Router implements iRouter{
 
             return;
         }
-        $this->request->getRequestData($_GET, INPUT_GET);
+        $this->request->getRequestData($requestData, $inputType);
 
         $handlerInformation = explode('::', $handler);
         if (count($handlerInformation) !== 2) {

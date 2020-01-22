@@ -16,7 +16,7 @@ class Request implements iRequest {
         $this->data = $parsedData;
     }
 
-    public function getData() {
-        return $this->data;
+    public function parse($key) {
+        return (isset($this->data[$key]) ? $this->data[$key] : null);
     }
 }

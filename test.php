@@ -9,16 +9,15 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-use libs\Request\Impl\Request;
-use libs\Router\Impl\Router;
+use model\Transaction;
 
-try {
-    $request = new Request();
-    $router = new Router($request);
-    $router->post('/transaction', 'Transaction::newTransaction');
+$trans = new Transaction();
+$trans->flip_trans_id = 1;
+$trans->bank_code = '22132';
+$trans->account_number = '122412323';
+$trans->amount = 1000000;
+$trans->remark = "sample";
 
-    $router->handle();
-} catch (Exception $e) {
-    var_dump($e);
-}
-
+use repository\Disbursement;
+$disb = new Disbursement();
+$disb->fetchOne($trans);

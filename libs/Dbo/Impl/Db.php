@@ -12,7 +12,7 @@ class Db implements iDbo {
         if (!self::$instance) {
             $db = new Db;
             $conf = parse_ini_file('conf.ini');
-            
+
             $db->conn = mysqli_connect($conf["DB_HOST"], $conf["DB_USERNAME"], $conf["DB_PASSWORD"], $conf["DB_NAME"]);
 
             if ($db->conn->connect_error) {
@@ -28,6 +28,9 @@ class Db implements iDbo {
         $db = Db::getInstance();
         $res = mysqli_query($db->conn, $query);
 
+        if (!$res) {
+            throw new \Exception('Failed to run query: ' . $query);
+        }
         return $res;
     }
 
@@ -40,9 +43,9 @@ class Db implements iDbo {
 
             $valueType = gettype($value);
             $isString = $valueType !== "boolean" &&
-                        $valueType !== 'integer' &&
-                        $valueType !== 'double' &&
-                        $valueType !== 'NULL';
+                $valueType !== 'integer' &&
+                $valueType !== 'double' &&
+                $valueType !== 'NULL';
             if ($isString) {
                 $valueString .= '\'';
             }
@@ -59,10 +62,8 @@ class Db implements iDbo {
         }
 
         $query = 'INSERT INTO ' .$model->_table .' (' . $columnString . ') VALUES (' . $valueString . ');';
-        $res = $this->query($query);
+        $this->query($query);
 
-        return $res;
+        return $model;
     }
 }
-
-?>

@@ -14,6 +14,6 @@ class Transaction {
             $data->status = 'NEW';
         }
         
-        $this->db->save($data);
+        return $this->db->save($data);
     }
 }
