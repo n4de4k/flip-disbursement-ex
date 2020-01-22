@@ -5,14 +5,15 @@ namespace libs\APIFetch;
 class Fetch {
     public $curl;
     function __construct($method, $url, $data = []) {
-        var_dump($data);
         $this->curl = curl_init();
 
+//        var_dump(count($data));
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
         switch ($method) {
             case 'POST' : {
                 curl_setopt($this->curl, CURLOPT_POST, 1);
-                if (count($data)) {
-                    curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
+                if (count($data) > 0) {
+                    curl_setopt($this->curl, CURLOPT_POSTFIELDS, http_build_query($data));
                 }
                 break;
             }
@@ -31,8 +32,6 @@ class Fetch {
             unset($data['secret_key']);
         }
 
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
-
         curl_setopt($this->curl, CURLOPT_URL, $url);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
     }
@@ -48,6 +47,7 @@ class Fetch {
                 } catch (\Exception $e) {
                     throw new \Exception('Fail to get valid response from flip: ', $e->getMessage());
                 }
+                break;
             }
             default: {
                 throw new \Exception('Response Type ' . $responseType . ' not implemented yet.');

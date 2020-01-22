@@ -2,18 +2,21 @@
 namespace repository;
 
 use libs\Dbo\Impl\Db;
-
+use model\Transaction as TransactionModel;
 class Transaction {
     private $db;
     function __construct() {
         $this->db = Db::getInstance();
     }
 
-    public function store($data) {
+    public function store(TransactionModel $data) {
         if (!$data->status) {
             $data->status = 'NEW';
         }
         
-        return $this->db->save($data);
+        $insertedId =  $this->db->save($data);
+        $data->id = $insertedId;
+
+        return $data;
     }
 }

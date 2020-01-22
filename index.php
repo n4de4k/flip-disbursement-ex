@@ -16,6 +16,7 @@ try {
     $request = new Request();
     $router = new Router($request);
     $router->post('/transaction', 'Transaction::newTransaction');
+    $router->get('/transaction', 'Transaction::checkTransaction');
 
     $router->handle();
 } catch (Exception $e) {

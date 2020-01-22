@@ -4,10 +4,12 @@ namespace repository;
 
 use libs\APIFetch\Fetch;
 use model\Transaction;
+use mysql_xdevapi\Exception;
 
 class Disbursement {
     private $serviceUri;
     private $serviceKey;
+    private $response;
     function __construct()
     {
         $conf = parse_ini_file('conf.ini');
@@ -18,18 +20,24 @@ class Disbursement {
         $this->serviceKey = $conf['FLIP_SECRET'];
     }
 
+    private function validateResponse() {
+        if (property_exists($this->response, 'errors')) {
+            throw new \Exception('Error from Flip Service: ' . json_encode($this->response->errors[0]));
+        }
+    }
+
     public function store(Transaction $model) {
         $reqData = $model->getData(true);
         $reqData['secret_key'] = $this->serviceKey;
 
         $fetcher = new Fetch("POST", $this->serviceUri . '/disburse', $reqData);
-        $response = $fetcher->exec();
+        $this->response = $fetcher->exec();
+        $this->validateResponse();
 
-        $model->status = $response['status'];
-        $model->receipt = $response['receipt'];
-        $model->time_served = $response['time_serve'];
-        $model->beneficiary_name = $response['beneficiary_name'];
-        $model->fee = $response['fee'];
+        $model->status = $this->response->status;
+        $model->receipt = $this->response->receipt;
+        $model->beneficiary_name = $this->response->beneficiary_name;
+        $model->fee = $this->response->fee;
 
         return $model;
     }
@@ -42,11 +50,12 @@ class Disbursement {
                 'secret_key' => $this->serviceKey
             ]
         );
-        $response = $fetcher->exec();
+        $this->response = $fetcher->exec();
+        $this->validateResponse();
 
-        $model->status = $response['status'];
-        $model->receipt = $response['receipt'];
-        $model->time_served = $response['time_serve'];
+        $model->status = $this->response->status;
+        $model->receipt = $this->response->receipt;
+        $model->time_served = $this->response->time_served;
 
         return $model;
     }

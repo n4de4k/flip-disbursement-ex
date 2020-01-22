@@ -9,7 +9,6 @@ class Model implements iModel{
 
     protected $created_at;
     protected $updated_at;
-    protected $deleted_at;
 
     function __construct() {
         $this->created_at = date('Y-m-d H:i:s');

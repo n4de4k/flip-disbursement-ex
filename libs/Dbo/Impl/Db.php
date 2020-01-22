@@ -29,9 +29,17 @@ class Db implements iDbo {
         $res = mysqli_query($db->conn, $query);
 
         if (!$res) {
-            throw new \Exception('Failed to run query: ' . $query);
+            throw new \Exception('Failed to run query: ' . $query . '. Error: ' . mysqli_error($db->conn));
         }
         return $res;
+    }
+
+    private function isString($value) {
+        $valueType = gettype($value);
+        return $valueType !== "boolean" &&
+            $valueType !== 'integer' &&
+            $valueType !== 'double' &&
+            $valueType !== 'NULL';
     }
 
     public function save($model) {
@@ -41,11 +49,7 @@ class Db implements iDbo {
         foreach ($model->getData() as $column => $value) {
             $columnString .= $column . ',';
 
-            $valueType = gettype($value);
-            $isString = $valueType !== "boolean" &&
-                $valueType !== 'integer' &&
-                $valueType !== 'double' &&
-                $valueType !== 'NULL';
+            $isString = $this->isString($value);
             if ($isString) {
                 $valueString .= '\'';
             }
@@ -62,6 +66,33 @@ class Db implements iDbo {
         }
 
         $query = 'INSERT INTO ' .$model->_table .' (' . $columnString . ') VALUES (' . $valueString . ');';
+        $this->query($query);
+
+        return $this->conn->insert_id;
+    }
+
+    public function update($model) {
+        if (!$model->id) {
+            throw new \Exception('To use this function, id  can\'t be null');
+        }
+        $query = 'UPDATE ' . $model->_table . ' SET';
+
+        foreach ($model->getData() as $column => $value) {
+            if ($column !== 'id') {
+                $query .= ' ' . $column . ' = ';
+                $isString = $this->isString($value);
+                if ($isString) {
+                    $query .= '\'';
+                }
+                $query .= (empty($value) ? 'NULL' : $value);
+                if ($isString) {
+                    $query .= '\'';
+                }
+            }
+        }
+
+        $query .= ' WHERE id = ' . $model->id . ';';
+
         $this->query($query);
 
         return $model;
